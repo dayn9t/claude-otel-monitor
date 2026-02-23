@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from collections import defaultdict
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Set, Optional
 
 
@@ -123,10 +123,10 @@ def extract_stats(records: List[dict], date_filter: Optional[datetime] = None) -
     calls = extract_api_calls(records)
 
     if date_filter:
-        # Filter to specific date (convert to local date for comparison)
+        # Filter to specific date (already local time)
         calls = [
             c for c in calls
-            if c.timestamp.astimezone().date() == date_filter.date()
+            if c.timestamp.date() == date_filter.date()
         ]
 
     # Aggregate from filtered calls
@@ -216,14 +216,15 @@ def extract_api_calls(records: List[dict]) -> List[ApiCall]:
                         for a in log.get('attributes', [])
                     }
 
-                    # Parse timestamp
+                    # Parse timestamp (UTC -> local time)
                     ts_str = attrs.get('event.timestamp', '')
                     try:
-                        timestamp = datetime.fromisoformat(ts_str.replace('Z', '+00:00'))
+                        ts_utc = datetime.fromisoformat(ts_str.replace('Z', '+00:00'))
+                        timestamp = ts_utc.astimezone()
                     except (ValueError, AttributeError):
-                        # Fallback to timeUnixNano
+                        # Fallback to timeUnixNano (assume UTC, convert to local)
                         nano = int(log.get('timeUnixNano', 0))
-                        timestamp = datetime.fromtimestamp(nano / 1e9)
+                        timestamp = datetime.fromtimestamp(nano / 1e9, tz=timezone.utc).astimezone()
 
                     call = ApiCall(
                         timestamp=timestamp,
