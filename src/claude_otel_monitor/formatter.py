@@ -44,11 +44,11 @@ def create_stats_table(stats: ApiStats, title_suffix: str = "") -> Table:
         data = stats.models[model_name]
         table.add_row(
             data.model,
-            str(data.count),
-            str(data.input_tokens),
-            str(data.output_tokens),
-            str(data.cache_read),
-            str(data.cache_creation),
+            f"{data.count:,}",
+            f"{data.input_tokens:,}",
+            f"{data.output_tokens:,}",
+            f"{data.cache_read:,}",
+            f"{data.cache_creation:,}",
             f"${data.cost_usd:.4f}",
             str(len(data.sessions)),
         )
@@ -56,9 +56,9 @@ def create_stats_table(stats: ApiStats, title_suffix: str = "") -> Table:
     # Add total row
     table.add_row(
         "[bold]TOTAL[/bold]",
-        f"[bold]{stats.total_calls}[/bold]",
-        f"[bold]{stats.total_input}[/bold]",
-        f"[bold]{stats.total_output}[/bold]",
+        f"[bold]{stats.total_calls:,}[/bold]",
+        f"[bold]{stats.total_input:,}[/bold]",
+        f"[bold]{stats.total_output:,}[/bold]",
         "",
         "",
         f"[bold red]${stats.total_cost:.4f}[/bold red]",
@@ -72,11 +72,11 @@ def create_summary_panel(stats: ApiStats) -> Panel:
     """Create a summary panel."""
     text = Text()
     text.append(f"Total Calls: ", style="bold")
-    text.append(f"{stats.total_calls}\n", style="cyan")
+    text.append(f"{stats.total_calls:,}\n", style="cyan")
     text.append(f"Total Input: ", style="bold")
-    text.append(f"{stats.total_input} tokens\n", style="cyan")
+    text.append(f"{stats.total_input:,} tokens\n", style="cyan")
     text.append(f"Total Output: ", style="bold")
-    text.append(f"{stats.total_output} tokens\n", style="cyan")
+    text.append(f"{stats.total_output:,} tokens\n", style="cyan")
     text.append(f"Total Cost: ", style="bold")
     text.append(f"${stats.total_cost:.4f}", style="red")
 
@@ -129,10 +129,10 @@ def create_calls_table(calls: List[ApiCall]) -> Table:
         table.add_row(
             time_str,
             call.model,
-            str(call.input_tokens),
-            str(call.output_tokens),
-            str(call.cache_read),
-            str(call.cache_creation),
+            f"{call.input_tokens:,}",
+            f"{call.output_tokens:,}",
+            f"{call.cache_read:,}",
+            f"{call.cache_creation:,}",
             f"{call.cost_usd:.4f}",
         )
 
