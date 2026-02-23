@@ -1,0 +1,47 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    timeout: 1s
+    send_batch_size: 1024
+
+exporters:
+  # 简化版 file exporter（无压缩）
+  file:
+    path: /data/claude-metrics.json
+    rotation:
+      max_megabytes: 10
+      max_days: 7
+      max_backups: 3
+    format: json
+    # 禁用压缩以便直接读取
+    # compression: zstd
+
+  # 调试输出
+  debug:
+    verbosity: normal
+
+service:
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [file, debug]
+
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [file, debug]
+
+  extensions:
+    - health_check
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133

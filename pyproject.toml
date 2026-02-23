@@ -1,0 +1,13 @@
+[project]
+name = "claude-otel-monitor"
+version = "0.1.0"
+description = "Claude Code API usage monitor via OpenTelemetry"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "click>=8.3.1",
+    "rich>=14.3.3",
+]
+
+[project.scripts]
+claude-monitor = "claude_otel_monitor.cli:main"
