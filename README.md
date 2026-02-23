@@ -40,18 +40,25 @@ uv run python -m claude_otel_monitor.cli start
 Add to your shell profile (`~/.bashrc` or `~/.zshrc`):
 
 ```bash
-export CLAUDE_CODE_ENABLE_TELEMETRY=1
-export OTEL_METRICS_EXPORTER=otlp
-export OTEL_LOGS_EXPORTER=otlp
-export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
-export OTEL_METRIC_EXPORT_INTERVAL=10000
-export OTEL_LOGS_EXPORT_INTERVAL=5000
+source /path/to/claude-otel-monitor/monitor.env
 ```
 
 Or set temporarily in current terminal:
 
 ```bash
-source <(uv run python -m claude_otel_monitor.cli init)
+source monitor.env
+```
+
+The `monitor.env` file contains:
+
+```bash
+export CLAUDE_CODE_ENABLE_TELEMETRY=1
+export OTEL_METRICS_EXPORTER=otlp
+export OTEL_LOGS_EXPORTER=otlp
+export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+export OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+export OTEL_METRIC_EXPORT_INTERVAL=10000
+export OTEL_LOGS_EXPORT_INTERVAL=5000
 ```
 
 ### 4. Run Claude Code
